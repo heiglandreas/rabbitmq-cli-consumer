@@ -2,6 +2,7 @@ package command
 
 import (
 	"os/exec"
+    "bytes"
 )
 
 type CommandFactory struct {
@@ -10,5 +11,13 @@ type CommandFactory struct {
 }
 
 func (me CommandFactory) Create(body string) *exec.Cmd {
-	return exec.Command(me.Cmd, append(me.Args, body)...)
+    execution := exec.Command(me.Cmd, me.Args...)
+
+    var b bytes.Buffer
+    b.Write([]byte(body))
+    execution.Stdin = &b
+
+    return execution
+
+//	return exec.Command(me.Cmd, append(me.Args, body)...)
 }
